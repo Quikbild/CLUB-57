@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Club 57 — Book Turf & Pickleball</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --green:#1B3A28;
+  --green-light:#2F5C41;
+  --green-pale:#F5F1E3;
+  --green-dim:#122318;
+  --gold:#C9A44C;
+  --white:#FFFFFF;
+  --off-white:#F6FAF6;
+  --gray:#EFF6EF;
+  --border:#D6E8D6;
+  --text:#16241A;
+  --muted:#5F7A63;
+  --red:#E53935;
+  --yellow:#F5A623;
+  --court-line:rgba(46,139,61,0.15);
+}
+body{background:var(--off-white);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;min-height:100vh;}
+
+/* HEADER */
+header{background:var(--green);padding:0;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.04) 60px,rgba(255,255,255,0.04) 61px),repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.04) 60px,rgba(255,255,255,0.04) 61px);}
+.header-inner{position:relative;z-index:1;padding:28px 20px 24px;text-align:center;}
+.header-badge{display:inline-block;background:rgba(201,164,76,0.12);border:1px solid rgba(201,164,76,0.35);border-radius:20px;padding:4px 14px;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.site-name{font-family:'Anton',sans-serif;font-size:clamp(44px,12vw,72px);color:#fff;letter-spacing:0.06em;line-height:1;}
+.site-name span{color:var(--gold);}
+.site-logo{display:block;margin:6px auto 4px;width:clamp(120px,26vw,168px);height:clamp(120px,26vw,168px);object-fit:cover;}
+.site-tagline{font-size:13px;color:rgba(255,255,255,0.7);margin-top:6px;letter-spacing:0.05em;}
+.header-stats{display:flex;justify-content:center;gap:24px;margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.15);}
+.header-stat{text-align:center;}
+.header-stat-val{font-family:'Anton',sans-serif;font-size:22px;color:var(--gold);letter-spacing:0.05em;}
+.header-stat-label{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.1em;text-transform:uppercase;margin-top:1px;}
+
+/* NAV */
+nav{background:#fff;border-bottom:2px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;}
+nav::-webkit-scrollbar{display:none;}
+.nav-btn{flex-shrink:0;padding:14px 20px;background:transparent;border:none;border-bottom:3px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap;margin-bottom:-2px;}
+.nav-btn.active{border-bottom-color:var(--green);color:var(--green);font-weight:600;}
+.nav-btn:hover:not(.active){color:var(--green);}
+
+/* VIEWS */
+.view{display:none;padding:20px 16px 80px;}
+.view.active{display:block;}
+
+/* DATE SELECTOR */
+.date-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:20px;}
+.date-scroll::-webkit-scrollbar{display:none;}
+.date-chip{flex-shrink:0;background:#fff;border:2px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;text-align:center;transition:all 0.2s;min-width:58px;}
+.date-chip:hover{border-color:var(--green);}
+.date-chip.active{background:var(--green);border-color:var(--green);}
+.date-chip-day{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+.date-chip.active .date-chip-day{color:rgba(255,255,255,0.8);}
+.date-chip-num{font-family:'Anton',sans-serif;font-size:22px;color:var(--text);line-height:1.1;margin-top:1px;}
+.date-chip.active .date-chip-num{color:#fff;}
+.date-chip-month{font-size:10px;color:var(--muted);}
+.date-chip.active .date-chip-month{color:rgba(255,255,255,0.7);}
+
+/* COURT TABS */
+.court-tabs{display:flex;gap:8px;margin-bottom:16px;}
+.court-tab{flex:1;padding:10px;border-radius:8px;border:2px solid var(--border);background:#fff;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:center;}
+.court-tab.active{background:var(--green);border-color:var(--green);color:#fff;font-weight:600;}
+
+/* SLOTS GRID */
+.slots-section-title{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;margin-top:16px;}
+.slots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;}
+.slot-btn{padding:12px 8px;border-radius:8px;border:2px solid var(--border);background:#fff;cursor:pointer;transition:all 0.2s;text-align:center;-webkit-tap-highlight-color:transparent;}
+.slot-btn:hover:not(.booked):not(.past){border-color:var(--green);background:var(--green-pale);}
+.slot-btn.selected{background:var(--green);border-color:var(--green);}
+.slot-time{font-size:13px;font-weight:600;color:var(--text);}
+.slot-btn.selected .slot-time{color:#fff;}
+.slot-btn.booked .slot-time{color:var(--muted);}
+.slot-status{font-size:10px;margin-top:3px;color:var(--muted);}
+.slot-btn.selected .slot-status{color:rgba(255,255,255,0.8);}
+.slot-btn.booked{background:#F5F5F5;border-color:#E0E0E0;cursor:not-allowed;}
+.slot-btn.booked .slot-status{color:var(--red);}
+.slot-btn.past{background:#F9F9F9;border-color:#EEEEEE;cursor:not-allowed;opacity:0.5;}
+.slot-btn.past .slot-time{color:#bbb;}
+.slot-btn.closed{background:#FFF3E0;border-color:#FFE0B2;cursor:not-allowed;}
+.slot-btn.closed .slot-time{color:#B8860B;}
+.slot-btn.closed .slot-status{color:#B8860B;font-weight:600;}
+
+/* LEGEND */
+.legend{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);}
+.legend-dot{width:12px;height:12px;border-radius:3px;border:2px solid;}
+.legend-dot.available{border-color:var(--border);background:#fff;}
+.legend-dot.selected{border-color:var(--green);background:var(--green);}
+.legend-dot.booked{border-color:#E0E0E0;background:#F5F5F5;}
+
+/* BOOKING SUMMARY BAR */
+.booking-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid var(--border);padding:12px 16px;display:none;align-items:center;justify-content:space-between;z-index:300;gap:12px;}
+.booking-bar.visible{display:flex;}
+.booking-bar-info{flex:1;}
+.booking-bar-title{font-size:13px;font-weight:600;color:var(--text);}
+.booking-bar-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.booking-bar-price{font-family:'Anton',sans-serif;font-size:22px;color:var(--green);letter-spacing:0.03em;}
+.book-now-btn{background:var(--green);border:none;border-radius:10px;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;padding:12px 24px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.book-now-btn:hover{background:var(--green-dim);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:none;align-items:flex-end;justify-content:center;padding:0;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
+.modal-title{font-family:'Anton',sans-serif;font-size:26px;color:var(--text);letter-spacing:0.05em;margin-bottom:4px;}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.booking-summary-box{background:var(--green-pale);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:20px;}
+.booking-summary-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;}
+.booking-summary-label{font-size:12px;color:var(--muted);}
+.booking-summary-val{font-size:13px;font-weight:600;color:var(--text);}
+.booking-summary-total{border-top:1px solid var(--border);margin-top:8px;padding-top:8px;}
+.booking-summary-total .booking-summary-val{color:var(--green);font-size:16px;}
+.form-group{margin-bottom:14px;}
+.form-label{font-size:12px;font-weight:600;color:var(--text);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;display:block;}
+.form-input{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color 0.2s;background:#fff;}
+.form-input:focus{border-color:var(--green);}
+.form-input::placeholder{color:#bbb;}
+.form-hint{font-size:11px;color:var(--muted);margin-top:4px;}
+.balance-row{background:#FFF8E8;border:1px solid #F0DDA8;border-radius:8px;padding:10px 12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+.balance-row-label{font-size:12px;color:var(--muted);}
+.balance-row-val{font-family:'Anton',sans-serif;font-size:18px;color:#B8860B;}
+.confirm-btn{width:100%;padding:14px;border-radius:10px;background:var(--green);border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:8px;}
+.confirm-btn:hover{background:var(--green-dim);}
+.confirm-btn:disabled{background:#ccc;cursor:not-allowed;}
+.cancel-btn{width:100%;padding:12px;border-radius:10px;background:transparent;border:2px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;margin-top:8px;}
+
+/* SUCCESS SCREEN */
+.success-screen{display:none;text-align:center;padding:20px 0;}
+.success-icon{font-size:60px;margin-bottom:16px;}
+.success-title{font-family:'Anton',sans-serif;font-size:32px;color:var(--green);letter-spacing:0.05em;}
+.success-sub{font-size:14px;color:var(--muted);margin-top:6px;line-height:1.6;}
+.success-box{background:var(--green-pale);border:1px solid var(--border);border-radius:10px;padding:16px;margin:20px 0;text-align:left;}
+.success-box-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid var(--border);}
+.success-box-row:last-child{border-bottom:none;}
+.success-box-label{color:var(--muted);}
+.success-box-val{font-weight:600;color:var(--text);}
+.success-note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:12px;}
+.done-btn{width:100%;padding:14px;border-radius:10px;background:var(--green);border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;}
+
+/* MY BOOKINGS */
+.booking-card{background:#fff;border:2px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;}
+.booking-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.booking-card-title{font-weight:600;font-size:15px;color:var(--text);}
+.booking-card-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-upcoming{background:#E8F5ED;color:var(--green);}
+.badge-past{background:#F5F5F5;color:var(--muted);}
+.booking-card-detail{display:flex;gap:16px;flex-wrap:wrap;}
+.booking-card-detail-item{font-size:12px;color:var(--muted);}
+.booking-card-detail-item span{font-weight:500;color:var(--text);}
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-state-icon{font-size:48px;display:block;margin-bottom:12px;opacity:0.4;}
+.empty-state p{font-size:14px;}
+
+/* SECTION TITLE */
+.section-title{font-family:'Anton',sans-serif;font-size:22px;color:var(--text);letter-spacing:0.05em;margin-bottom:4px;}
+.section-sub{font-size:13px;color:var(--muted);margin-bottom:16px;}
+
+/* DIRECTIONS BTN */
+.directions-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:10px;background:var(--green);border:none;color:#fff;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;margin-bottom:16px;transition:all 0.2s;}
+.directions-btn:hover{background:var(--green-dim);}
+
+/* INFO PAGE */
+.info-card{background:#fff;border:2px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;}
+.info-card-title{font-weight:600;font-size:14px;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.info-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-label{color:var(--muted);}
+.info-val{font-weight:500;color:var(--text);}
+
+/* LOADING */
+.loading{text-align:center;padding:40px;color:var(--muted);}
+.loading-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+@media(min-width:480px){
+  .view{padding:24px 24px 80px;}
+  .slots-grid{grid-template-columns:repeat(4,1fr);}
+  .modal{border-radius:20px;margin:20px;max-height:85vh;}
+  .modal-overlay{align-items:center;}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-badge">🏟️ Multi-Sport Club · Alwar</div>
+    <img class="site-logo" src="club57-logo.jpg" alt="Club 57" style="border-radius:50%;">
+    <div class="site-tagline">Turf · Pickleball — book your slot · Pool & Café on-site</div>
+    <div class="header-stats">
+      <div class="header-stat">
+        <div class="header-stat-val">3</div>
+        <div class="header-stat-label">Facilities</div>
+      </div>
+      <div class="header-stat">
+        <div class="header-stat-val">6AM–11PM</div>
+        <div class="header-stat-label">Hours</div>
+      </div>
+      <div class="header-stat">
+        <div class="header-stat-val">₹400+</div>
+        <div class="header-stat-label">Booking Amt</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <button class="nav-btn active" onclick="switchView('book')">🎟️ Book Now</button>
+  <button class="nav-btn" onclick="switchView('mybookings')">📋 My Bookings</button>
+  <button class="nav-btn" onclick="switchView('info')">ℹ️ Info</button>
+</nav>
+
+<!-- BOOK VIEW -->
+<div class="view active" id="book-view">
+  <div class="section-title">Book a Slot</div>
+  <div class="section-sub">Select facility, date and time slot</div>
+
+  <!-- FACILITY TABS -->
+  <div class="court-tabs">
+    <button class="court-tab active" onclick="selectFacility(1,this)">⚽ Turf</button>
+    <button class="court-tab" onclick="selectFacility(3,this)">🏓 Pickleball</button>
+  </div>
+
+  <!-- DATE SELECTOR -->
+  <div class="date-scroll" id="dateScroll"></div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot available"></div>Available</div>
+    <div class="legend-item"><div class="legend-dot selected"></div>Selected</div>
+    <div class="legend-item"><div class="legend-dot booked"></div>Booked</div>
+  </div>
+
+  <!-- SLOTS -->
+  <div id="slotsContainer">
+    <div class="loading"><div class="loading-spinner"></div>Loading slots...</div>
+  </div>
+</div>
+
+<!-- MY BOOKINGS VIEW -->
+<div class="view" id="mybookings-view">
+  <div class="section-title">My Bookings</div>
+  <div class="section-sub">Your recent court bookings</div>
+  <div id="myBookingsList"><div class="empty-state"><span class="empty-state-icon">📋</span><p>No bookings yet.<br>Book a court to get started!</p></div></div>
+</div>
+
+<!-- INFO VIEW -->
+<div class="view" id="info-view">
+  <div class="section-title">Club Info</div>
+  <div class="section-sub">Everything you need to know</div>
+
+  <div class="info-card">
+    <div class="info-card-title">🏟️ Facility Details</div>
+    <div class="info-row"><span class="info-label">Name</span><span class="info-val">Club 57</span></div>
+    <div class="info-row"><span class="info-label">Location</span><span class="info-val">Alwar, Rajasthan</span></div>
+    <div class="info-row"><span class="info-label">Bookable</span><span class="info-val">Turf, Pickleball</span></div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-card-title">⏰ Timings & Pricing</div>
+    <div class="info-row"><span class="info-label">Opening Time</span><span class="info-val">6:00 AM</span></div>
+    <div class="info-row"><span class="info-label">Closing Time</span><span class="info-val">11:00 PM</span></div>
+    <div class="info-row"><span class="info-label">Slot Duration</span><span class="info-val">1 Hour</span></div>
+    <div class="info-row"><span class="info-label">⚽ Football/Cricket Turf</span><span class="info-val">₹1400 / hour</span></div>
+    <div class="info-row"><span class="info-label">🏓 Pickleball Court</span><span class="info-val">₹400 / hour</span></div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-card-title">🏊 Also at Club 57</div>
+    <div class="info-row"><span class="info-label">Swimming Pool</span><span class="info-val">On-site · no booking needed</span></div>
+    <div class="info-row"><span class="info-label">Café</span><span class="info-val">On-site · walk-ins welcome</span></div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-card-title">💳 How Payment Works</div>
+    <div class="info-row"><span class="info-label">Booking Amount</span><span class="info-val">Min ₹400 online</span></div>
+    <div class="info-row"><span class="info-label">Balance</span><span class="info-val">Pay at venue</span></div>
+  </div>
+
+  <a class="directions-btn" href="https://maps.app.goo.gl/nVpriHeov8JE4Zp96" target="_blank">
+    📍 Get Directions on Google Maps
+  </a>
+
+  <div class="info-card" style="padding:0;overflow:hidden;margin-bottom:12px;">
+    <iframe 
+      src="https://maps.google.com/maps?q=Club+57+Alwar&output=embed" 
+      width="100%" 
+      height="200" 
+      style="border:none;display:block;"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <div class="info-card">
+    <div class="info-card-title">📞 Contact</div>
+    <div class="info-row"><span class="info-label">WhatsApp</span><span class="info-val">+91 73000 96315</span></div>
+    <div class="info-row"><span class="info-label">Booking</span><span class="info-val">Online (this website)</span></div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-card-title">📋 Rules & Guidelines</div>
+    <div class="info-row"><span class="info-label">Cancellation</span><span class="info-val">Contact on WhatsApp</span></div>
+    <div class="info-row"><span class="info-label">Arrive</span><span class="info-val">5 mins before slot</span></div>
+    <div class="info-row"><span class="info-label">Equipment</span><span class="info-val">Available at the venue</span></div>
+    <div class="info-row"><span class="info-label">Dress Code</span><span class="info-val">Sports attire</span></div>
+  </div>
+</div>
+
+<!-- BOOKING BAR -->
+<div class="booking-bar" id="bookingBar">
+  <div class="booking-bar-info">
+    <div class="booking-bar-title" id="barTitle">1 slot selected</div>
+    <div class="booking-bar-sub" id="barSub">Club 57</div>
+  </div>
+  <div class="booking-bar-price" id="barPrice">₹1400</div>
+  <button class="book-now-btn" onclick="openBookingModal()">Book Now →</button>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+
+    <!-- FORM -->
+    <div id="bookingForm">
+      <div class="modal-title">Confirm Booking</div>
+      <div class="modal-sub">Fill your details to complete the booking</div>
+
+      <div class="booking-summary-box" id="modalSummary"></div>
+
+      <div class="form-group">
+        <label class="form-label">Your Name *</label>
+        <input class="form-input" id="customerName" type="text" placeholder="Enter your full name" maxlength="50">
+      </div>
+      <div class="form-group">
+        <label class="form-label">WhatsApp Number *</label>
+        <input class="form-input" id="customerPhone" type="tel" placeholder="10 digit mobile number" maxlength="10">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Number of Players</label>
+        <select class="form-input" id="playerCount">
+          <option value="2">2 Players</option>
+          <option value="3">3 Players</option>
+          <option value="4" selected>4 Players</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Booking Amount (Pay Now) *</label>
+        <input class="form-input" id="advanceAmount" type="number" min="400" step="50" oninput="updateBalanceDisplay()">
+        <div class="form-hint">Minimum ₹400. Remaining balance is paid at the venue.</div>
+      </div>
+      <div class="balance-row">
+        <span class="balance-row-label">Balance (pay at venue)</span>
+        <span class="balance-row-val" id="balanceDisplay">₹0</span>
+      </div>
+
+      <button class="confirm-btn" id="confirmBtn" onclick="confirmBooking()">Confirm & Pay Booking Amount</button>
+      <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">Slot Booked!</div>
+      <div class="success-sub">Your slot is confirmed.</div>
+      <div class="success-box" id="successDetails"></div>
+      <div class="success-note">Please arrive 5 minutes before your slot with the balance amount.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== SUPABASE CONFIG =====
+const SUPABASE_URL = 'https://hjfmnhmesfjhuifzxhvp.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqZm1uaG1lc2ZqaHVpZnp4aHZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MDA1OTQsImV4cCI6MjEwMDI3NjU5NH0.cWwZGxRfGWPjS7CVewhYDOic92jLoaDMzi2SRpR7yVI';
+
+// Initialize Supabase after page loads
+let sbClient = null;
+window.addEventListener('load', () => {
+  try {
+    const { createClient } = supabase;
+    sbClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('Supabase initialized successfully');
+    loadSlots();
+    subscribeToBookingChanges();
+  } catch(e) {
+    console.error('Supabase init failed:', e);
+    loadSlots();
+  }
+  resumePendingPaymentIfAny();
+});
+
+// ===== LIVE SYNC =====
+// Without this, one browser tab booking a slot doesn't tell any other open tab/device —
+// so a slot can look "Available" on someone else's screen for as long as they've had the
+// page open, even seconds after it's actually taken. This keeps every open session in sync
+// the instant a booking is confirmed, so the slot flips to "Booked" and becomes unclickable
+// before anyone else can attempt to pay for it.
+function subscribeToBookingChanges() {
+  if (!sbClient) return;
+  sbClient
+    .channel('bookings-live')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bookings' }, () => {
+      loadSlots();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'closures' }, () => {
+      loadSlots();
+    })
+    .subscribe();
+}
+
+// ===== RESUME A PAYMENT THAT BOUNCED OUT TO THE BANK AND BACK (netbanking/UPI redirect flows) =====
+// Cards stay in Razorpay's popup and call `handler` directly. Netbanking/UPI can redirect the
+// whole page out to the bank and back, which reloads this page fresh and loses the in-memory
+// `booking` object `handler` needed — so the payment succeeds on Razorpay's side but never gets
+// saved here. Razorpay appends razorpay_payment_id / order_id / signature back onto this same
+// URL when that happens, so we check for those on load and resume the save automatically.
+function resumePendingPaymentIfAny() {
+  const params = new URLSearchParams(window.location.search);
+  const payment_id = params.get('razorpay_payment_id');
+  const order_id = params.get('razorpay_order_id');
+  const signature = params.get('razorpay_signature');
+  if (!payment_id || !order_id || !signature) return;
+
+  const pendingRaw = localStorage.getItem('c57_pending_booking');
+  // Clean the params out of the URL either way, so a refresh doesn't re-trigger this.
+  window.history.replaceState({}, document.title, window.location.pathname);
+
+  if (!pendingRaw) return;
+  const pending = JSON.parse(pendingRaw);
+  if (pending.order_id !== order_id) return; // belongs to a different/older attempt
+
+  verifyAndSaveBooking(
+    { razorpay_payment_id: payment_id, razorpay_order_id: order_id, razorpay_signature: signature },
+    pending.booking
+  );
+  localStorage.removeItem('c57_pending_booking');
+}
+
+// ===== EDGE FUNCTIONS =====
+const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
+
+// ===== OWNER WHATSAPP =====
+const OWNER_PHONE = '917300096315';
+
+// ===== FACILITIES =====
+const FACILITIES = {
+  1: { name: 'Football/Cricket Turf', short: 'Turf', emoji: '⚽', price: 1400 },
+  3: { name: 'Pickleball Court', short: 'Pickleball', emoji: '🏓', price: 400 }
+};
+const MIN_BOOKING_AMOUNT = 400;
+
+// ===== STATE =====
+let selectedDate = null;
+let selectedFacility = 1;
+let selectedSlot = null;
+let bookedSlots = {}; // {date_slot: true}
+let myBookings = JSON.parse(localStorage.getItem('c57_my_bookings') || '[]');
+
+// ===== TIME SLOTS =====
+const TIME_SLOTS = [];
+for (let h = 6; h < 23; h++) {
+  const start = h < 12 ? `${h}:00 AM` : h === 12 ? `12:00 PM` : `${h-12}:00 PM`;
+  const endH = h + 1;
+  const end = endH < 12 ? `${endH}:00 AM` : endH === 12 ? `12:00 PM` : `${endH-12}:00 PM`;
+  TIME_SLOTS.push({ label: `${start}`, end, hour: h });
+}
+
+// ===== BUILD DATES =====
+function buildDates() {
+  const scroll = document.getElementById('dateScroll');
+  scroll.innerHTML = '';
+  const today = new Date();
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    const chip = document.createElement('div');
+    chip.className = 'date-chip' + (i === 0 ? ' active' : '');
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    chip.innerHTML = `
+      <div class="date-chip-day">${i === 0 ? 'Today' : days[d.getDay()]}</div>
+      <div class="date-chip-num">${d.getDate()}</div>
+      <div class="date-chip-month">${months[d.getMonth()]}</div>
+    `;
+    const dateStr = d.toISOString().split('T')[0];
+    chip.onclick = () => {
+      document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      selectedDate = dateStr;
+      selectedSlot = null;
+      updateBookingBar();
+      loadSlots();
+    };
+    if (i === 0) selectedDate = dateStr;
+    scroll.appendChild(chip);
+  }
+}
+
+// ===== SELECT FACILITY =====
+function selectFacility(facilityId, btn) {
+  selectedFacility = facilityId;
+  selectedSlot = null;
+  document.querySelectorAll('.court-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  updateBookingBar();
+  loadSlots();
+}
+
+// ===== LOAD SLOTS =====
+async function loadSlots() {
+  const container = document.getElementById('slotsContainer');
+  container.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Loading slots...</div>';
+
+  // Load bookings from Supabase or localStorage fallback
+  let booked = [];
+  let closedHours = null; // null = nothing closed; [] = whole day closed; [hours] = specific hours closed
+  if (sbClient) {
+    try {
+      const { data } = await sbClient
+        .from('bookings')
+        .select('slot_hour')
+        .eq('date', selectedDate)
+        .eq('court', selectedFacility)
+        .eq('status', 'confirmed');
+      if (data) booked = data.map(b => b.slot_hour);
+
+      // Closures set by the owner (court IS NULL means "applies to all facilities")
+      const { data: closures } = await sbClient
+        .from('closures')
+        .select('hour_from, hour_to, court')
+        .lte('date_from', selectedDate)
+        .gte('date_to', selectedDate)
+        .or(`court.eq.${selectedFacility},court.is.null`);
+
+      if (closures && closures.length > 0) {
+        const wholeDayClosed = closures.some(c => c.hour_from == null && c.hour_to == null);
+        if (wholeDayClosed) {
+          closedHours = 'ALL';
+        } else {
+          closedHours = [];
+          closures.forEach(c => {
+            for (let h = c.hour_from; h <= c.hour_to; h++) closedHours.push(h);
+          });
+        }
+      }
+    } catch(e) { console.log('Using local fallback'); }
+  } else {
+    // Fallback: use localStorage
+    const key = `c57_booked_${selectedDate}_${selectedFacility}`;
+    booked = JSON.parse(localStorage.getItem(key) || '[]');
+  }
+
+  renderSlots(booked, closedHours);
+}
+
+// ===== RENDER SLOTS =====
+function renderSlots(bookedHours, closedHours) {
+  const container = document.getElementById('slotsContainer');
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
+  const currentHour = now.getHours();
+  const price = FACILITIES[selectedFacility].price;
+
+  const morning = TIME_SLOTS.filter(s => s.hour < 12);
+  const afternoon = TIME_SLOTS.filter(s => s.hour >= 12 && s.hour < 17);
+  const evening = TIME_SLOTS.filter(s => s.hour >= 17);
+
+  function renderGroup(title, slots) {
+    if (!slots.length) return '';
+    const items = slots.map(slot => {
+      const isPast = selectedDate === todayStr && slot.hour <= currentHour;
+      const isBooked = bookedHours.includes(slot.hour);
+      const isClosed = closedHours === 'ALL' || (Array.isArray(closedHours) && closedHours.includes(slot.hour));
+      const isSelected = selectedSlot === slot.hour;
+      let cls = 'slot-btn';
+      let status = `₹${price} · Available`;
+      if (isPast) { cls += ' past'; status = 'Past'; }
+      else if (isClosed) { cls += ' closed'; status = 'Closed'; }
+      else if (isBooked) { cls += ' booked'; status = 'Booked'; }
+      else if (isSelected) { cls += ' selected'; status = '✓ Selected'; }
+      const onclick = (!isPast && !isBooked && !isClosed) ? `selectSlot(${slot.hour}, this)` : '';
+      return `<div class="${cls}" ${onclick ? `onclick="${onclick}"` : ''}>
+        <div class="slot-time">${slot.label}</div>
+        <div class="slot-status">${status}</div>
+      </div>`;
+    }).join('');
+    return `<div class="slots-section-title">${title}</div><div class="slots-grid">${items}</div>`;
+  }
+
+  container.innerHTML =
+    renderGroup('🌅 Morning', morning) +
+    renderGroup('☀️ Afternoon', afternoon) +
+    renderGroup('🌆 Evening', evening);
+}
+
+// ===== SELECT SLOT =====
+function selectSlot(hour, el) {
+  const price = FACILITIES[selectedFacility].price;
+  if (selectedSlot === hour) {
+    selectedSlot = null;
+    el.classList.remove('selected');
+    el.querySelector('.slot-status').textContent = `₹${price} · Available`;
+  } else {
+    // Deselect previous
+    document.querySelectorAll('.slot-btn.selected').forEach(b => {
+      b.classList.remove('selected');
+      b.querySelector('.slot-status').textContent = `₹${price} · Available`;
+    });
+    selectedSlot = hour;
+    el.classList.add('selected');
+    el.querySelector('.slot-status').textContent = '✓ Selected';
+  }
+  updateBookingBar();
+}
+
+// ===== BOOKING BAR =====
+function updateBookingBar() {
+  const bar = document.getElementById('bookingBar');
+  if (selectedSlot === null) {
+    bar.classList.remove('visible');
+    return;
+  }
+  bar.classList.add('visible');
+  const slot = TIME_SLOTS.find(s => s.hour === selectedSlot);
+  const facility = FACILITIES[selectedFacility];
+  document.getElementById('barTitle').textContent = `${slot.label} – ${slot.end}`;
+  document.getElementById('barSub').textContent = `${facility.emoji} ${facility.short} · ${formatDate(selectedDate)}`;
+  document.getElementById('barPrice').textContent = `₹${facility.price}`;
+}
+
+// ===== OPEN MODAL =====
+function openBookingModal() {
+  if (selectedSlot === null) return;
+  const slot = TIME_SLOTS.find(s => s.hour === selectedSlot);
+  const facility = FACILITIES[selectedFacility];
+  document.getElementById('modalSummary').innerHTML = `
+    <div class="booking-summary-row"><span class="booking-summary-label">Facility</span><span class="booking-summary-val">${facility.emoji} ${facility.name}</span></div>
+    <div class="booking-summary-row"><span class="booking-summary-label">Date</span><span class="booking-summary-val">${formatDate(selectedDate)}</span></div>
+    <div class="booking-summary-row"><span class="booking-summary-label">Time</span><span class="booking-summary-val">${slot.label} – ${slot.end}</span></div>
+    <div class="booking-summary-row booking-summary-total"><span class="booking-summary-label">Total</span><span class="booking-summary-val">₹${facility.price}</span></div>
+  `;
+  const advanceInput = document.getElementById('advanceAmount');
+  advanceInput.min = MIN_BOOKING_AMOUNT;
+  advanceInput.max = facility.price;
+  advanceInput.value = MIN_BOOKING_AMOUNT;
+  updateBalanceDisplay();
+  document.getElementById('bookingForm').style.display = 'block';
+  document.getElementById('successScreen').style.display = 'none';
+  document.getElementById('bookingModal').classList.add('open');
+}
+
+// ===== UPDATE BALANCE DISPLAY =====
+function updateBalanceDisplay() {
+  const facility = FACILITIES[selectedFacility];
+  let advance = parseInt(document.getElementById('advanceAmount').value) || 0;
+  const balance = Math.max(facility.price - advance, 0);
+  document.getElementById('balanceDisplay').textContent = `₹${balance}`;
+}
+
+function closeModal() {
+  document.getElementById('bookingModal').classList.remove('open');
+}
+
+function closeModalSuccess() {
+  closeModal();
+  selectedSlot = null;
+  updateBookingBar();
+  loadSlots();
+}
+
+// ===== CONFIRM BOOKING (Razorpay flow) =====
+async function confirmBooking() {
+  const name = document.getElementById('customerName').value.trim();
+  const phone = document.getElementById('customerPhone').value.trim();
+  const players = document.getElementById('playerCount').value;
+  const facility = FACILITIES[selectedFacility];
+  const advanceAmount = parseInt(document.getElementById('advanceAmount').value) || 0;
+
+  if (!name) { alert('Please enter your name'); return; }
+  if (!phone || phone.length !== 10 || isNaN(phone)) { alert('Please enter a valid 10-digit mobile number'); return; }
+  if (advanceAmount < MIN_BOOKING_AMOUNT) { alert(`Booking amount must be at least ₹${MIN_BOOKING_AMOUNT}`); return; }
+  if (advanceAmount > facility.price) { alert(`Booking amount can't exceed the total price of ₹${facility.price}`); return; }
+
+  const btn = document.getElementById('confirmBtn');
+  btn.disabled = true;
+  btn.textContent = 'Checking availability...';
+
+  // Re-check the slot is still free right before charging anything — catches the case where
+  // someone else booked it since this page's slot list was last loaded. The verify-payment
+  // check on the server remains as the final safety net for a true same-instant race.
+  try {
+    const { data: stillFree, error: freeCheckErr } = await sbClient
+      .from('bookings')
+      .select('id')
+      .eq('date', selectedDate)
+      .eq('court', selectedFacility)
+      .eq('slot_hour', selectedSlot)
+      .eq('status', 'confirmed');
+    if (freeCheckErr) throw freeCheckErr;
+    if (stillFree && stillFree.length > 0) {
+      alert('This slot was just booked by someone else. Please choose another slot.');
+      btn.disabled = false;
+      btn.textContent = 'Confirm & Pay Booking Amount';
+      loadSlots();
+      return;
+    }
+
+    const { data: closureCheck, error: closureErr } = await sbClient
+      .from('closures')
+      .select('hour_from, hour_to, court')
+      .lte('date_from', selectedDate)
+      .gte('date_to', selectedDate)
+      .or(`court.eq.${selectedFacility},court.is.null`);
+    if (closureErr) throw closureErr;
+    if (closureCheck && closureCheck.length > 0) {
+      const stillOpen = !closureCheck.some(c =>
+        (c.hour_from == null && c.hour_to == null) ||
+        (selectedSlot >= c.hour_from && selectedSlot <= c.hour_to)
+      );
+      if (!stillOpen) {
+        alert('This slot has just been closed by the venue. Please choose another slot.');
+        btn.disabled = false;
+        btn.textContent = 'Confirm & Pay Booking Amount';
+        loadSlots();
+        return;
+      }
+    }
+  } catch (e) {
+    console.error('Availability re-check failed, proceeding — verify-payment will still catch a conflict:', e);
+  }
+
+  btn.textContent = 'Starting payment...';
+
+  const slot = TIME_SLOTS.find(s => s.hour === selectedSlot);
+  const bookingId = 'C57' + Date.now().toString().slice(-6);
+  const balanceAmount = facility.price - advanceAmount;
+
+  const booking = {
+    id: bookingId,
+    name,
+    phone,
+    players,
+    date: selectedDate,
+    court: selectedFacility,
+    facility_name: facility.name,
+    slot_hour: selectedSlot,
+    slot_label: slot.label,
+    slot_end: slot.end,
+    amount: facility.price,
+    advance_amount: advanceAmount,
+    balance_amount: balanceAmount,
+    status: 'confirmed',
+    created_at: new Date().toISOString()
+  };
+
+  try {
+    // Step 1: ask our create-order Edge Function for a Razorpay order — only for the booking amount
+    const orderRes = await fetch(`${FUNCTIONS_URL}/create-order`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      },
+      body: JSON.stringify({ amount: advanceAmount })
+    });
+    const orderData = await orderRes.json();
+    if (!orderRes.ok) throw new Error(orderData.error || 'Could not start payment');
+
+    // Save the booking now, tied to this order_id, so if netbanking/UPI redirects the whole
+    // page away and back, resumePendingPaymentIfAny() can pick it back up and still save it.
+    localStorage.setItem('c57_pending_booking', JSON.stringify({ order_id: orderData.order.id, booking }));
+
+    // Step 2: open Razorpay's checkout popup
+    const rzp = new Razorpay({
+      key: orderData.key_id,
+      amount: orderData.order.amount,
+      currency: orderData.order.currency,
+      name: 'Club 57',
+      description: `${facility.name} · ${booking.slot_label} – ${booking.slot_end} (Booking Amount)`,
+      order_id: orderData.order.id,
+      prefill: { name, contact: phone },
+      theme: { color: '#2E8B3D' },
+      handler: async function (response) {
+        await verifyAndSaveBooking(response, booking);
+      },
+      modal: {
+        ondismiss: function () {
+          btn.disabled = false;
+          btn.textContent = 'Confirm & Pay Booking Amount';
+        }
+      }
+    });
+    rzp.on('payment.failed', function () {
+      alert('Payment failed. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Confirm & Pay Booking Amount';
+    });
+    rzp.open();
+  } catch (err) {
+    alert(err.message || 'Something went wrong starting payment.');
+    btn.disabled = false;
+    btn.textContent = 'Confirm & Pay Booking Amount';
+  }
+}
+
+// ===== VERIFY PAYMENT (server saves the booking itself) =====
+async function verifyAndSaveBooking(razorpayResponse, booking) {
+  const btn = document.getElementById('confirmBtn');
+  btn.textContent = 'Confirming...';
+
+  booking.payment_id = razorpayResponse.razorpay_payment_id;
+  booking.order_id = razorpayResponse.razorpay_order_id;
+
+  try {
+    const verifyRes = await fetch(`${FUNCTIONS_URL}/verify-payment`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      },
+      body: JSON.stringify({
+        razorpay_order_id: razorpayResponse.razorpay_order_id,
+        razorpay_payment_id: razorpayResponse.razorpay_payment_id,
+        razorpay_signature: razorpayResponse.razorpay_signature,
+        booking
+      })
+    });
+    const verifyData = await verifyRes.json();
+    if (!verifyRes.ok || !verifyData.success) {
+      throw new Error(verifyData.error || 'Payment could not be verified. If money was deducted, it will be refunded automatically.');
+    }
+
+    // Booking is already saved in Supabase by verify-payment (service role).
+    // Just keep a local copy for the "My Bookings" tab.
+    myBookings.unshift(booking);
+    localStorage.setItem('c57_my_bookings', JSON.stringify(myBookings));
+    localStorage.removeItem('c57_pending_booking');
+
+    btn.disabled = false;
+    btn.textContent = 'Confirm & Pay Booking Amount';
+    showSuccess(booking);
+    loadSlots(); // refresh immediately so this slot shows Booked right away, even behind the success screen
+  } catch (err) {
+    alert(err.message || 'Payment verification failed.');
+    btn.disabled = false;
+    btn.textContent = 'Confirm & Pay Booking Amount';
+  }
+}
+
+// ===== WHATSAPP OWNER =====
+// Deliberately NOT auto-opened here. window.open() called deep inside an async function,
+// after multiple awaits, falls outside the "trusted user click" window most browsers require
+// for popups — so it gets silently blocked with no error. Instead, this builds the link and
+// a real button (in the success screen) opens it on an actual tap, which always works.
+function buildOwnerWhatsAppUrl(b) {
+  const msg = `🎟️ *NEW BOOKING*\n\n*Booking ID:* ${b.id}\n*Facility:* ${b.facility_name}\n*Name:* ${b.name}\n*Phone:* ${b.phone}\n*Date:* ${formatDate(b.date)}\n*Time:* ${b.slot_label} – ${b.slot_end}\n*Players:* ${b.players}\n*Total:* ₹${b.amount}\n*Paid Online:* ₹${b.advance_amount}\n*Balance (at venue):* ₹${b.balance_amount}\n\n_Club 57 Booking System_`;
+  return `https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`;
+}
+
+// ===== SHOW SUCCESS =====
+function showSuccess(b) {
+  document.getElementById('bookingForm').style.display = 'none';
+  document.getElementById('successDetails').innerHTML = `
+    <a href="${buildOwnerWhatsAppUrl(b)}" target="_blank" rel="noopener" id="whatsappNotifyBtn" onclick="setTimeout(closeModalSuccess, 400);"
+       style="display:block;text-align:center;padding:16px;background:#25D366;color:white;font-weight:800;font-size:16px;border-radius:10px;text-decoration:none;margin-bottom:16px;animation:pulseGlow 1.4s ease-in-out 3;">
+      Tap to notify owner on WhatsApp
+    </a>
+    <style>@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,0.55);}50%{box-shadow:0 0 0 10px rgba(37,211,102,0);}}</style>
+    <div class="success-box-row"><span class="success-box-label">Booking ID</span><span class="success-box-val">${b.id}</span></div>
+    <div class="success-box-row"><span class="success-box-label">Facility</span><span class="success-box-val">${b.facility_name}</span></div>
+        <div class="success-box-row"><span class="success-box-label">Date</span><span class="success-box-val">${formatDate(b.date)}</span></div>
+    <div class="success-box-row"><span class="success-box-label">Time</span><span class="success-box-val">${b.slot_label} – ${b.slot_end}</span></div>
+    <div class="success-box-row"><span class="success-box-label">Name</span><span class="success-box-val">${b.name}</span></div>
+    <div class="success-box-row"><span class="success-box-label">Total</span><span class="success-box-val">₹${b.amount}</span></div>
+    <div class="success-box-row"><span class="success-box-label">Paid Online</span><span class="success-box-val">₹${b.advance_amount}</span></div>
+    <div class="success-box-row"><span class="success-box-label">Balance at Venue</span><span class="success-box-val">₹${b.balance_amount}</span></div>
+  `;
+  document.getElementById('successScreen').style.display = 'block';
+
+  // Still attempt an automatic open — harmless if blocked, and it does work on some
+  // browsers/devices. The visible button above is the reliable path either way.
+  window.open(buildOwnerWhatsAppUrl(b), '_blank');
+}
+
+// ===== MY BOOKINGS =====
+function renderMyBookings() {
+  const el = document.getElementById('myBookingsList');
+  if (!myBookings.length) {
+    el.innerHTML = '<div class="empty-state"><span class="empty-state-icon">📋</span><p>No bookings yet.<br>Book a slot to get started!</p></div>';
+    return;
+  }
+  const now = new Date();
+  el.innerHTML = myBookings.slice(0, 20).map(b => {
+    const bDate = new Date(b.date);
+    const isPast = bDate < now && b.slot_hour < now.getHours();
+    const facility = FACILITIES[b.court] || { emoji: '🎟️' };
+    return `<div class="booking-card">
+      <div class="booking-card-header">
+        <div class="booking-card-title">${b.slot_label} – ${b.slot_end}</div>
+        <div class="booking-card-badge ${isPast ? 'badge-past' : 'badge-upcoming'}">${isPast ? 'Past' : 'Upcoming'}</div>
+      </div>
+      <div class="booking-card-detail">
+        <div class="booking-card-detail-item">📅 <span>${formatDate(b.date)}</span></div>
+        <div class="booking-card-detail-item">${facility.emoji} <span>${b.facility_name || 'Club 57'}</span></div>
+        <div class="booking-card-detail-item">👥 <span>${b.players} players</span></div>
+        <div class="booking-card-detail-item">💰 <span>₹${b.advance_amount} paid · ₹${b.balance_amount} due</span></div>
+        <div class="booking-card-detail-item">🆔 <span>${b.id}</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== SWITCH VIEW =====
+function switchView(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(view + '-view').classList.add('active');
+  event.target.classList.add('active');
+  if (view === 'mybookings') renderMyBookings();
+}
+
+// ===== UTILS =====
+function formatDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// ===== INIT =====
+buildDates();
+// loadSlots called after Supabase initializes via window.load event
+</script>
+</body>
+</html>
